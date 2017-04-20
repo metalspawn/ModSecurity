@@ -684,6 +684,11 @@ int Transaction::processRequestBody() {
         }
 #if WITH_YAJL
     } else if (m_requestBodyProcessor == JSONRequestBody) {
+        // An empty string is not valid JSON so skip the
+        // checks if that's the case...
+        if (m_requestBody.tellp() <= 0) {
+            return true;
+        }
         std::string error;
         if (m_json->init() == true) {
             m_json->processChunk(m_requestBody.str().c_str(),
